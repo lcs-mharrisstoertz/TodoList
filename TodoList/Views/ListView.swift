@@ -15,7 +15,29 @@ struct ListView: View {
         NavigationView{
             VStack{
                 HStack{
+                    TextField("Enter a to-do item", text: Binding.constant(""))
                     
+                    Button(action: {
+                    }, label: {
+                        Text("ADD")
+                            .font(.caption)
+                    })
+                }
+                .padding(20)
+                
+                List{
+                    HStack{
+                        Image(systemName: "circle")
+                        Text("Study for Physics quiz")
+                    }
+                    
+                    HStack{
+                        Image (systemName: "checkmark.circle")
+                        Text("Finish Computer Science Assignment")
+                    }
+                    
+                    HStack{
+                    Text("Go for run")
                 }
             }
             
