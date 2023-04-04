@@ -32,15 +32,18 @@ struct ListView: View {
                     }
                     
                     HStack{
-                        Image (systemName: "checkmark.circle")
+                        Image(systemName: "checkmark.circle")
                         Text("Finish Computer Science Assignment")
                     }
                     
                     HStack{
-                    Text("Go for run")
+                        Image(systemName: "circle")
+                        foregroundColor(.blue)
+                        Text("Go for run")
+                    }
                 }
             }
-            
+            .navigationTitle("To do")
         }
     }
 }
