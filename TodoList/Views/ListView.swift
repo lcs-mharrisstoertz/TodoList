@@ -5,12 +5,22 @@
 //  Created by Morgan Harris-Stoertz on 2023-04-04.
 //
 
+import Blackbird
 import SwiftUI
 
 struct ListView: View {
     
     //MARK: Stored properties
-    @State var todoItems: [TodoItem] = existingTodoItems
+    
+    @Environment(\.blackbirdDatabase) var db:
+    Blackbird.Database? 
+    
+    // the list of items to be completed
+    @BlackbirdLiveModels({ db in
+        try await TodoItem.read(from: db)
+    }) var todoItems
+    
+    // the item currently being added
     @State var newItemDescription: String = ""
     
     //MARK: Computed properties
@@ -22,13 +32,13 @@ struct ListView: View {
                     TextField("Enter a to-do item", text: $newItemDescription)
                     
                     Button(action: {
-                        let lastId = todoItems.last!.id
-                        let newId = lastId + 1
-                        let newTodoItem = TodoItem(id: newId,
-                                                   description: newItemDescription, completed: false)
-                        
-                        todoItems.append(newTodoItem)
-                        newItemDescription = ""
+//                        let lastId = todoItems.last!.id
+//                        let newId = lastId + 1
+//                        let newTodoItem = TodoItem(id: newId,
+//                                                   description: newItemDescription, completed: false)
+//
+//                        todoItems.append(newTodoItem)
+//                        newItemDescription = ""
                     }, label: {
                         Text("ADD")
                             .font(.caption)
@@ -36,7 +46,7 @@ struct ListView: View {
                 }
                 .padding(20)
                 
-                List(todoItems) {currentItem in
+                List(todoItems.results) {currentItem in
                     Label(title: {
                         Text(currentItem.description)
                     }, icon: {
