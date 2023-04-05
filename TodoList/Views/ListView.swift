@@ -9,10 +9,11 @@ import SwiftUI
 
 struct ListView: View {
     
-    //MARK: Computed properties
+    //MARK: Stored properties
     @State var todoItems: [TodoItem] = existingTodoItems
     @State var newItemDescription: String = ""
     
+    //MARK: Computed properties
     var body: some View {
         
         NavigationView{
@@ -35,7 +36,7 @@ struct ListView: View {
                 }
                 .padding(20)
                 
-                List(existingTodoItems) {currentItem in
+                List(todoItems) {currentItem in
                     Label(title: {
                         Text(currentItem.description)
                     }, icon: {
