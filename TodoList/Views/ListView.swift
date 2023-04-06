@@ -32,13 +32,15 @@ struct ListView: View {
                     TextField("Enter a to-do item", text: $newItemDescription)
                     
                     Button(action: {
-//                        let lastId = todoItems.last!.id
-//                        let newId = lastId + 1
-//                        let newTodoItem = TodoItem(id: newId,
-//                                                   description: newItemDescription, completed: false)
-//
-//                        todoItems.append(newTodoItem)
-//                        newItemDescription = ""
+                        Task{
+                            //write to the data base
+                            try await db!.transaction { core in
+                                try core.query("INSERT INTO TodoItem (description) VALUES (?)", newItemDescription)
+                            }
+                            
+                        //clear the input field
+                            newItemDescription = ""
+                        }
                     }, label: {
                         Text("ADD")
                             .font(.caption)
@@ -46,17 +48,30 @@ struct ListView: View {
                 }
                 .padding(20)
                 
-                List(todoItems.results) {currentItem in
-                    Label(title: {
-                        Text(currentItem.description)
-                    }, icon: {
-                        if currentItem.completed == true {
-                            Image(systemName: "checkmark.circle")
-                        } else {
-                            Image(systemName: "circle")
+                List{
+                    ForEach(todoItems.results) {currentItem in
+                        Label(title: {
+                            Text(currentItem.description)
+                        }, icon: {
+                            if currentItem.completed == true {
+                                Image(systemName: "checkmark.circle")
+                            } else {
+                                Image(systemName: "circle")
+                            }
+                        })
+                        .onTapGesture {
+                            Task {
+                                try await db!.transaction { core in
+                                    //Change the status for this person to the opposite of its current value
+                                    try core.query("UPDATE TodoItem SET completed = (?) Where id = (?)",
+                                                   !currentItem.completed,
+                                                   currentItem.id)
+                                }
+                            }
                         }
-                    })
+                    }
                 }
+                
                 
 //                List{
 //                    HStack{
