@@ -70,6 +70,7 @@ struct ListView: View {
                             }
                         }
                     }
+                    .onDelete(perform: removeRows)
                 }
                 
                 
@@ -94,6 +95,14 @@ struct ListView: View {
 //                }
             }
             .navigationTitle("To do")
+        }
+    }
+    
+    //MARK: functions
+    func removeRows(at offsets: IndexSet){
+        //what item was swiped?
+        for offset in offsets {
+            print(offset)
         }
     }
 }
