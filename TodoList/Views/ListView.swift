@@ -100,9 +100,22 @@ struct ListView: View {
     
     //MARK: functions
     func removeRows(at offsets: IndexSet){
-        //what item was swiped?
-        for offset in offsets {
-            print(offset)
+        Task{
+            try await db!.transaction { core in
+                //get the id of the item that must be deleted
+                var idList = ""
+                for offset in offsets {
+                    idList += "\(todoItems.results[offset].id),"
+                }
+                
+                //remove the final comma
+                print(idList)
+                idList.removeLast()
+                print(idList)
+                
+                //Delete the row(s) from the data base
+                try core.query("DELETE FROM TodoItem Where id IN (?)", idList)
+            }
         }
     }
 }
