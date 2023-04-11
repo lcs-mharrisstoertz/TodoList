@@ -21,6 +21,8 @@ struct ListView: View {
     // the item currently being added
     @State var newItemDescription: String = ""
     
+    @State var searchText = ""
+    
     //MARK: Computed properties
     var body: some View {
         
@@ -46,7 +48,7 @@ struct ListView: View {
                 }
                 .padding(20)
                 
-              
+                ListItemsView(filterOn: searchText)
                 .searchable(text: $searchText)
                 
             }

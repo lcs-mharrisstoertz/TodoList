@@ -61,8 +61,8 @@
 		CC9E692E29DC5A0F009DF5CD /* TodoList */ = {
 			isa = PBXGroup;
 			children = (
-				CC9E694829DDC9EB009DF5CD /* Helpers */,
 				CC9E692F29DC5A0F009DF5CD /* TodoListApp.swift */,
+				CC9E694829DDC9EB009DF5CD /* Helpers */,
 				CC9E693F29DC5BC4009DF5CD /* Views */,
 				CC9E694029DC63B0009DF5CD /* Model */,
 				CC9E693329DC5A12009DF5CD /* Assets.xcassets */,
