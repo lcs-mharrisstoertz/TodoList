@@ -17,7 +17,7 @@ struct ListView: View {
     
     // the list of items to be completed
     @BlackbirdLiveModels({ db in
-        try await TodoItem.read(from: db)
+        try await TodoItem.read(from: db, sqlWhere: "description LIKE ?, %\(searchText)%")
     }) var todoItems
     
     // the item currently being added
@@ -72,27 +72,8 @@ struct ListView: View {
                     }
                     .onDelete(perform: removeRows)
                 }
+                .searchable(text: $searchText)
                 
-                
-//                List{
-//                    HStack{
-//                        Image(systemName: "circle")
-//                            .foregroundColor(.blue)
-//                        Text("Study for Physics quiz")
-//                    }
-//
-//                    HStack{
-//                        Image(systemName: "checkmark.circle")
-//                            .foregroundColor(.blue)
-//                        Text("Finish Computer Science Assignment")
-//                    }
-//
-//                    HStack{
-//                        Image(systemName: "circle")
-//                            .foregroundColor(.blue)
-//                        Text("Go for run")
-//                    }
-//                }
             }
             .navigationTitle("To do")
         }
