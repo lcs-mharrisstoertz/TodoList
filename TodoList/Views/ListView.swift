@@ -16,9 +16,7 @@ struct ListView: View {
     Blackbird.Database? 
     
     // the list of items to be completed
-    @BlackbirdLiveModels({ db in
-        try await TodoItem.read(from: db, sqlWhere: "description LIKE ?, %\(searchText)%")
-    }) var todoItems
+ 
     
     // the item currently being added
     @State var newItemDescription: String = ""
@@ -48,30 +46,7 @@ struct ListView: View {
                 }
                 .padding(20)
                 
-                List{
-                    ForEach(todoItems.results) {currentItem in
-                        Label(title: {
-                            Text(currentItem.description)
-                        }, icon: {
-                            if currentItem.completed == true {
-                                Image(systemName: "checkmark.circle")
-                            } else {
-                                Image(systemName: "circle")
-                            }
-                        })
-                        .onTapGesture {
-                            Task {
-                                try await db!.transaction { core in
-                                    //Change the status for this person to the opposite of its current value
-                                    try core.query("UPDATE TodoItem SET completed = (?) Where id = (?)",
-                                                   !currentItem.completed,
-                                                   currentItem.id)
-                                }
-                            }
-                        }
-                    }
-                    .onDelete(perform: removeRows)
-                }
+              
                 .searchable(text: $searchText)
                 
             }
@@ -79,26 +54,7 @@ struct ListView: View {
         }
     }
     
-    //MARK: functions
-    func removeRows(at offsets: IndexSet){
-        Task{
-            try await db!.transaction { core in
-                //get the id of the item that must be deleted
-                var idList = ""
-                for offset in offsets {
-                    idList += "\(todoItems.results[offset].id),"
-                }
-                
-                //remove the final comma
-                print(idList)
-                idList.removeLast()
-                print(idList)
-                
-                //Delete the row(s) from the data base
-                try core.query("DELETE FROM TodoItem Where id IN (?)", idList)
-            }
-        }
-    }
+    
 }
 
 struct ListView_Previews: PreviewProvider {

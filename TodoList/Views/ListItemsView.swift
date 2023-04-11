@@ -4,12 +4,65 @@
 //
 //  Created by Morgan Harris-Stoertz on 2023-04-11.
 //
-
+import Blackbird
 import SwiftUI
 
 struct ListItemsView: View {
+    //MARK: Stored properties
+    //needed to query database
+    @Environment(\.blackbirdDatabase) var db: Blackbird.Database?
+    
+    @BlackbirdLiveModels({ db in
+        try await TodoItem.read(from: db, sqlWhere: "description LIKE ?, %\(searchText)%")
+    }) var todoItems
+    
+    //MARK: Computed properties
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        List{
+            ForEach(todoItems.results) {currentItem in
+                Label(title: {
+                    Text(currentItem.description)
+                }, icon: {
+                    if currentItem.completed == true {
+                        Image(systemName: "checkmark.circle")
+                    } else {
+                        Image(systemName: "circle")
+                    }
+                })
+                .onTapGesture {
+                    Task {
+                        try await db!.transaction { core in
+                            //Change the status for this person to the opposite of its current value
+                            try core.query("UPDATE TodoItem SET completed = (?) Where id = (?)",
+                                           !currentItem.completed,
+                                           currentItem.id)
+                        }
+                    }
+                }
+            }
+            .onDelete(perform: removeRows)
+        }
+    }
+    
+    //MARK: functions
+    func removeRows(at offsets: IndexSet){
+        Task{
+            try await db!.transaction { core in
+                //get the id of the item that must be deleted
+                var idList = ""
+                for offset in offsets {
+                    idList += "\(todoItems.results[offset].id),"
+                }
+                
+                //remove the final comma
+                print(idList)
+                idList.removeLast()
+                print(idList)
+                
+                //Delete the row(s) from the data base
+                try core.query("DELETE FROM TodoItem Where id IN (?)", idList)
+            }
+        }
     }
 }
 
