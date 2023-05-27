@@ -46,7 +46,7 @@ struct ListItemsView: View {
     init(filterOn searchText: String){
         //initialize the live model
         _todoItems = BlackbirdLiveModels({ db in
-            try await TodoItem.read(from: db, sqlWhere: "description LIKE ?, %\(searchText)%")
+            try await TodoItem.read(from: db, sqlWhere: "description LIKE ?"," %\(searchText)%")
         })
         
     }

@@ -62,5 +62,6 @@ struct ListView: View {
 struct ListView_Previews: PreviewProvider {
     static var previews: some View {
         ListView()
+            .environment(\.blackbirdDatabase, AppDatabase.instance)
     }
 }
